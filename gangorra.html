@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hexágono na Gangorra</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #1a1a1a;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: relative;
+      width: 800px;
+      height: 500px;
+    }
+
+    .plataforma {
+      position: absolute;
+      top: 260px;
+      left: 100px;
+      width: 600px;
+      height: 22px;
+      background: linear-gradient(#f0f0f0, #e0e0e0);
+      border: 5px solid #333;
+      border-radius: 8px;
+      transform-origin: center center;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.6);
+      z-index: 2;
+    }
+
+    .hexagono {
+      position: absolute;
+      width: 76px;
+      height: 76px;
+      z-index: 3;
+      transition: transform 0.06s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene">
+    <div id="plataforma" class="plataforma"></div>
+    
+    <div id="hexagono" class="hexagono">
+      <svg width="76" height="76" viewBox="0 0 100 100">
+        <polygon 
+          points="50,12 85,32 85,68 50,88 15,68 15,32" 
+          fill="#ffffff"/>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    const plataforma = document.getElementById('plataforma');
+    const hexagono = document.getElementById('hexagono');
+
+    const centroX = 400;
+    const plataformaY = 260;
+    const hexLargura = 76;
+
+    let anguloAnterior = 0;
+    let rotacaoTotal = 0;
+
+    function animar() {
+      const anguloGraus = Math.sin(Date.now() / 700) * 28;
+      const anguloRad = anguloGraus * (Math.PI / 180);
+
+      plataforma.style.transform = `rotate(${anguloGraus}deg)`;
+
+      // Aumentado para chegar quase no fim da plataforma
+      const offset = anguloGraus * -0.028;     // aumentado
+      const distancia = offset * 295;          // aumentado
+
+      const x = centroX + distancia * Math.cos(anguloRad);
+      const y = plataformaY + distancia * Math.sin(anguloRad) - 59;
+
+      const deltaMovimento = distancia - anguloAnterior;
+      rotacaoTotal += deltaMovimento * 2.8;
+
+      hexagono.style.left = `${x - hexLargura/2}px`;
+      hexagono.style.top  = `${y}px`;
+      hexagono.style.transform = `rotate(${rotacaoTotal}deg)`;
+
+      anguloAnterior = distancia;
+    }
+
+    setInterval(animar, 16);
+  </script>
+
+</body>
+</html>
